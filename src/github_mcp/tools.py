@@ -1,5 +1,5 @@
-from fastmcp  import FastMCP
-from .github_client import HEADERS, BASE_URL
+from fastmcp import FastMCP
+from github_client import HEADERS, BASE_URL
 import requests
 mcp = FastMCP()
 
@@ -18,13 +18,9 @@ def list_repositories():
     for repo in responce.json():
 
         repos.append({
-
             "name": repo["name"],
-
             "url": repo["html_url"],
-
             "visibility": "Private" if repo["private"] else "Public"
-
         })
 
     return repos
