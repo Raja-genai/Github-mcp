@@ -71,3 +71,22 @@ def create_issue(owner:str, repo:str, title:str, body:str):
         "message": "Issue created successfully",
         "issue_url": responce.json()["html_url"]
     }
+
+@mcp.tool()
+def close_issue(owner:str,repo:str,issue_number:int):
+    '''This function will close the issue using the issue number'''
+    update={"state":"closed"}
+    responce = requests.patch(
+        f"{BASE_URL}/repos/{owner}/{repo}/issues/{issue_number}",
+        json=update,
+        headers=HEADERS
+    )
+    if responce.status_code != 200:
+        return {
+            "status": responce.status_code,
+            "error": responce.json()
+        }
+    return {
+        "message": "Issue closed successfully",
+        "issue_url": responce.json()["html_url"]
+    }
