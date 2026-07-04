@@ -25,6 +25,7 @@ def list_repositories():
 
     return repos
 
+
 @mcp.tool()
 def list_issues(owner:str, repo:str):
     '''Returns all the issues of the user repository'''
