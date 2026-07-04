@@ -51,3 +51,23 @@ def list_issues(owner:str, repo:str):
         })
     
     return issues
+
+@mcp.tool()
+def create_issue(owner:str, repo:str, title:str, body:str):
+    "This function Creates an issue with title and body in the repository of the owner"
+    
+    issue={"title":title,"body":body}
+    responce = requests.post(
+        f"{BASE_URL}/repos/{owner}/{repo}/issues",
+        json=issue,
+        headers=HEADERS
+    )
+    if responce.status_code != 201:
+        return {
+            "status": responce.status_code,
+            "error": responce.json()
+        }
+    return {
+        "message": "Issue created successfully",
+        "issue_url": responce.json()["html_url"]
+    }
