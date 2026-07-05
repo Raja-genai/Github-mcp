@@ -1,7 +1,7 @@
 # GitHub MCP Server
 
 [![PyPI](https://img.shields.io/pypi/v/raja-github-mcp)](https://pypi.org/project/raja-github-mcp/)
-[![Python](https://img.shields.io/pypi/pyversions/raja-github-mcp)](https://pypi.org/project/raja-github-mcp/)
+[![Python](https://img.shields.io/pypi/pyversions/raja-github-mcp.svg)](https://pypi.org/project/raja-github-mcp/)
 [![License](https://img.shields.io/github/license/Raja-genai/github-mcp)](LICENSE)
 
 An MCP server that provides GitHub repository, issue, branch, and pull request management tools for AI agents and LLM applications.
