@@ -1,11 +1,33 @@
 [project]
-name = "github_mcp"
+name = "raja_github_mcp"
 version = "0.1.0"
-description = "An MCP which helps with GITHUB tasks with an agent"
+description = "An MCP server for GitHub repository, issue, branch, and pull request management."
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [
-    "fastmcp>=3.4.2",
+authors = [
+    {name = "Anna Vamsi Krishna Raja"}
+]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "github",
+    "ai-agent",
+    "fastmcp"
 ]
 
+dependencies = [
+    "fastmcp>=3.4.2",
+    "requests",
+    "python-dotenv"
+]
+
+[build-system]
+requires =["setuptools>=42", "wheel"]
+build-backend ="setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+github-mcp = "github_mcp.main:main"
 
