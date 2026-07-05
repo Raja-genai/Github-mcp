@@ -168,3 +168,157 @@ def get_repository_details(owner:str,repo:str):
         "clone_url": repo_data["clone_url"]
     }
 
+@mcp.tool()
+def create_repository(name:str,description:str,private:bool,auto_init:bool):
+    '''Use this tool to create a repository'''
+   
+    responce = requests.post(
+        f"{BASE_URL}/user/repos",
+        json={"name":name,"description":description,"private":private,"auto_init":auto_init},
+        headers = HEADERS
+    )
+    if responce.status_code!=201:
+        return {
+            "status": responce.status_code,
+            "error": responce.json()
+        }
+    else:
+        return{
+            "message":"Repository Created Successfully",
+            "issue_url":responce.json()['html_url'],
+            "clone_url": responce.json()["clone_url"]
+        }
+@mcp.tool()
+def list_branches(owner: str, repo: str):
+    """Returns all branches of a repository."""
+
+    response = requests.get(
+        f"{BASE_URL}/repos/{owner}/{repo}/branches",
+        headers=HEADERS
+    )
+
+    if response.status_code != 200:
+        return {
+            "status": response.status_code,
+            "error": response.json()
+        }
+
+    branches = []
+
+    for branch in response.json():
+        branches.append({
+            "name": branch["name"],
+            "protected": branch["protected"]
+        })
+
+    return branches
+
+@mcp.tool()
+def create_branch(owner: str, repo: str, branch_name: str):
+    """Creates a new branch."""
+
+    repo_response = requests.get(
+        f"{BASE_URL}/repos/{owner}/{repo}",
+        headers=HEADERS
+    )
+
+    if repo_response.status_code != 200:
+        return {
+            "status": repo_response.status_code,
+            "error": repo_response.json()
+        }
+
+    default_branch = repo_response.json()["default_branch"]
+
+    sha_response = requests.get(
+        f"{BASE_URL}/repos/{owner}/{repo}/git/ref/heads/{default_branch}",
+        headers=HEADERS
+    )
+
+    if sha_response.status_code != 200:
+        return {
+            "status": sha_response.status_code,
+            "error": sha_response.json()
+        }
+
+    sha = sha_response.json()["object"]["sha"]
+
+    create_response = requests.post(
+        f"{BASE_URL}/repos/{owner}/{repo}/git/refs",
+        json={
+            "ref": f"refs/heads/{branch_name}",
+            "sha": sha
+        },
+        headers=HEADERS
+    )
+
+    if create_response.status_code != 201:
+        return {
+            "status": create_response.status_code,
+            "error": create_response.json()
+        }
+
+    return {
+        "message": "Branch created successfully",
+        "branch": branch_name
+    }
+
+@mcp.tool()
+def list_pull_requests(owner: str, repo: str):
+    """Returns all pull requests."""
+
+    response = requests.get(
+        f"{BASE_URL}/repos/{owner}/{repo}/pulls",
+        headers=HEADERS
+    )
+
+    if response.status_code != 200:
+        return {
+            "status": response.status_code,
+            "error": response.json()
+        }
+
+    prs = []
+
+    for pr in response.json():
+        prs.append({
+            "number": pr["number"],
+            "title": pr["title"],
+            "state": pr["state"],
+            "url": pr["html_url"]
+        })
+
+    return prs
+
+@mcp.tool()
+def create_pull_request(
+    owner: str,
+    repo: str,
+    title: str,
+    body: str,
+    head: str,
+    base: str
+):
+    """Creates a pull request."""
+
+    response = requests.post(
+        f"{BASE_URL}/repos/{owner}/{repo}/pulls",
+        json={
+            "title": title,
+            "body": body,
+            "head": head,
+            "base": base
+        },
+        headers=HEADERS
+    )
+
+    if response.status_code != 201:
+        return {
+            "status": response.status_code,
+            "error": response.json()
+        }
+
+    return {
+        "message": "Pull request created successfully",
+        "pr_url": response.json()["html_url"]
+    }
